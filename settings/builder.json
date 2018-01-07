@@ -1,0 +1,32 @@
+{
+  "appKey": "",
+  "appSecret": "",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "includeAnySDK": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": false,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.Sudoku",
+  "privateKey": "",
+  "renderMode": "0",
+  "startScene": "f2d17a7d-4888-4fc7-9f30-b00b098b98f8",
+  "title": "Sudoku",
+  "webOrientation": "auto",
+  "wechatgame": {
+    "appid": "wx26aea8612fffd7cd",
+    "orientation": "portrait"
+  },
+  "xxteaKey": "9d453cd3-b0a9-40"
+}
