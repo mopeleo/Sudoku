@@ -50,6 +50,23 @@ cc.Class({
             type:cc.Prefab
         },
 
+        whiteSpriteFrame:{
+            default:null,
+            type:cc.SpriteFrame
+        },
+
+        graySpriteFrame:{
+            default: null,
+            type: cc.SpriteFrame
+        },
+
+        exitButton:{
+            default:null,
+            type:cc.Button
+        },
+
+        cellEventFlag:true,  //单元格事件开关
+        // keyExistFlag:false,   //键盘弹出标志
         clickCell:null
     },
 
@@ -60,43 +77,21 @@ cc.Class({
     start () {
         this.initKey();
         this.initFinish();
+        this.exitButton.node.on(cc.Node.EventType.TOUCH_END, function(){cc.director.end();}, this);
         sudoku.init();
         sudoku.create();
-        // for(var i = 0; i < sudoku.game.length; i++){
-        //     for(var j = 0; j < sudoku.game[i].length; j++){
-        //         /* 动态新增LABEL */
-        //         var numberLabel = new cc.Node("numberLabel");
-        //         numberLabel.x = 30*(j - 4);
-        //         numberLabel.y = 30*(4 - i) - 10;
-        //         numberLabel.color = cc.Color.BLUE;
-        //         var label = numberLabel.addComponent(cc.Label);
-        //         label.fontSize = 20;
-        //         label.string = sudoku.game[i][j];
-        //         if(sudoku.game[i][j] == 0){
-        //             label.string = " ";
-        //         }
-
-        //         numberLabel.on(cc.Node.EventType.TOUCH_END, this.clickCellEvent, this);
-
-        //         this.block.node.addChild(numberLabel);
-        //         /* 动态新增LABEL END*/
-        //     }
-        // }
 
         for(var i = 0; i < sudoku.game.length; i++){
             for(var j = 0; j < sudoku.game[i].length; j++){
                 var cell = cc.instantiate(this.cellPrefab);
                 var px = 30*(j - 4);
                 var py = 30*(4 - i);
-                if(px < 0){
+                //调整对齐像素
+                if(px > 0){
                     px++;
-                }else if(px > 0){
-                    px--;
                 }
                 if(py < 0){
-                    py++;
-                }else if(py > 0){
-                    py = py - 2;
+                    py--;
                 }
                 cell.setPosition(cc.p(px, py));
                 if(sudoku.game[i][j] == 0){
@@ -116,19 +111,34 @@ cc.Class({
         }
     },
 
+    // clickCellEvent: function(event){
+    //     if(this.clickCell != null){
+    //         this.clickCell.on(cc.Node.EventType.TOUCH_END, this.clickCellEvent, this);
+    //     }
+    //     this.key.node.x=0;
+    //     this.clickCell = event.target;
+    //     this.clickCell.off(cc.Node.EventType.TOUCH_END);
+    // },
+
     clickCellEvent: function(event){
-        if(this.clickCell != null){
-            this.clickCell.on(cc.Node.EventType.TOUCH_END, this.clickCellEvent, this);
+        if(this.cellEventFlag){
+            this.cellEventFlag = false;
+            this.key.node.x=0;
+            this.clickCell = event.target;
+            this.clickCell.getComponent(cc.Sprite).spriteFrame = this.graySpriteFrame;
+        }else{
+            this.cellEventFlag = true;
+            this.key.node.x=1000;
+            this.clickCell.getComponent(cc.Sprite).spriteFrame = this.whiteSpriteFrame;
+            this.clickCell = null;
         }
-        this.key.node.x=0;
-        this.clickCell = event.target;
-        this.clickCell.off(cc.Node.EventType.TOUCH_END);
     },
 
     fillNumberEvent: function(event){
         var clickNum = event.target.getComponent(cc.Label).string;
         this.clickCell.getChildByName("num").getComponent(cc.Label).string = clickNum;
-        this.clickCell.on(cc.Node.EventType.TOUCH_END, this.clickCellEvent, this);
+        // this.clickCell.on(cc.Node.EventType.TOUCH_END, this.clickCellEvent, this);
+        this.cellEventFlag = true;
 
         if(sudoku.check(this.clickCell._row, this.clickCell._col, clickNum) != 0){
             this.clickCell.getChildByName("num").color = cc.Color.RED;
@@ -173,6 +183,18 @@ cc.Class({
     initFinish:function(){
         this.finish.node.x = 1000;
         // this.finish.node.getChildByName("again").getComponent(cc.Label).string = "test";
+        this.finish.node.getChildByName("again").on(cc.Node.EventType.TOUCH_END, function(){
+            sudoku.again();
+            cc.director.loadScene("index");
+        }, this);
+    },
+
+    exitGame:function(){
+        cc.director.end();
+    },
+
+    saveGame:function(){
+        this.finish.node.x = 1000;
         this.finish.node.getChildByName("again").on(cc.Node.EventType.TOUCH_END, function(){
             sudoku.again();
             cc.director.loadScene("index");

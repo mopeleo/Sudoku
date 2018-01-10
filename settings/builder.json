@@ -13,10 +13,10 @@
   "oauthLoginServer": "",
   "optimizeHotUpdate": false,
   "orientation": {
-    "landscapeLeft": true,
-    "landscapeRight": true,
+    "landscapeLeft": false,
+    "landscapeRight": false,
     "portrait": false,
-    "upsideDown": false
+    "upsideDown": true
   },
   "packageName": "org.cocos2d.Sudoku",
   "privateKey": "",

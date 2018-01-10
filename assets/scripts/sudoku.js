@@ -64,11 +64,10 @@ sudoku.create = function() {
     }
     var blank = 0;
     if(this.level == 1){
-        blank = this.getRandomBetween(45, 55);
+        blank = this.getRandomBetween(45, 50);
         while(blank > 0){
             var row = this.getRandomBetween(0, this.block);
             var col = this.getRandomBetween(0, this.block);
-            var block = this.getBlock(row, col);
             var number = this.game[row][col];
             var count = 0;
             if(number != 0){
@@ -77,24 +76,25 @@ sudoku.create = function() {
                         count++;
                     }
                 }
-                if(count == 2){     //每行至少保留2个数字
+                if(count == 3){     //每行至少保留3个数字
                     continue;
                 }
+                var _block = this.getBlock(row, col);
                 this.rowExistNumber[row][number-1] = false;
                 this.colExistNumber[col][number-1] = false;
-                this.blockExistNumber[block][number-1] = false;
+                this.blockExistNumber[_block][number-1] = false;
                 this.game[row][col] = 0;
                 blank--;
             }
         }
     }else if(this.level == 2){
-        blank = this.getRandomBetween(52, 57);
+        blank = this.getRandomBetween(50, 57);
         var math = this.totalJumpNumber();     //奇数偶数间隔共挖个数，小于总空白
         var sub = blank - math;
         while(blank > 0){
             var row = this.getRandomBetween(0, this.block);
             var col = this.getRandomBetween(0, this.block);
-            if(sub - blank < 0){
+            if(sub - blank < 0){     //间隔挖完后，随机挖剩下的空白
                 if(row % 2 == 0){
                     if(col % 2 != 0){       //同为偶数
                         col = col - 1 > 0 ? col - 1 : col + 1;
@@ -105,7 +105,6 @@ sudoku.create = function() {
                     }
                 }
             }
-            var block = this.getBlock(row, col);
             var number = this.game[row][col];
             var count = 0;
             if(number != 0){
@@ -117,9 +116,10 @@ sudoku.create = function() {
                 if(count == 2){     //每行至少保留2个数字
                     continue;
                 }
+                var _block = this.getBlock(row, col);
                 this.rowExistNumber[row][number-1] = false;
                 this.colExistNumber[col][number-1] = false;
-                this.blockExistNumber[block][number-1] = false;
+                this.blockExistNumber[_block][number-1] = false;
                 this.game[row][col] = 0;
                 blank--;
             }
@@ -129,7 +129,6 @@ sudoku.create = function() {
         while(blank > 0){
             var row = this.getRandomBetween(0, this.block);
             var col = this.getRandomBetween(0, this.block);
-            var block = this.getBlock(row, col);
             var number = this.game[row][col];
             var count = 0;
             if(number != 0){
@@ -141,27 +140,36 @@ sudoku.create = function() {
                 if(count == 1){     //每行至少保留1个数字
                     continue;
                 }
+                var _block = this.getBlock(row, col);
                 this.rowExistNumber[row][number-1] = false;
                 this.colExistNumber[col][number-1] = false;
-                this.blockExistNumber[block][number-1] = false;
+                this.blockExistNumber[_block][number-1] = false;
                 this.game[row][col] = 0;
                 blank--;
             }
         }
-
     }else{
-        blank = this.getRandomBetween(60, 65);
+        // 每行数字不能多于2个，81-2*9 至少要挖63个洞
+        blank = this.getRandomBetween(58, 63);
         while(blank > 0){
             var row = this.getRandomBetween(0, this.block);
             var col = this.getRandomBetween(0, this.block);
-            var block = this.getBlock(row, col);
             var number = this.game[row][col];
+            var count = 0;
             if(number != 0){
-                this.rowExistNumber[row][number-1] = false;
-                this.colExistNumber[col][number-1] = false;
-                this.blockExistNumber[block][number-1] = false;
-                this.game[row][col] = 0;
-                blank--;
+                for(var i = 0; i < this.block; i++){
+                    if(this.game[row][i] > 0){
+                        count++;
+                    }
+                }
+                if(count > 2){     //每行数字不能多于2个
+                    var _block = this.getBlock(row, col);
+                    this.rowExistNumber[row][number-1] = false;
+                    this.colExistNumber[col][number-1] = false;
+                    this.blockExistNumber[_block][number-1] = false;
+                    this.game[row][col] = 0;
+                    blank--;
+                }
             }
         }
     }
