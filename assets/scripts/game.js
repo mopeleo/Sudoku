@@ -65,6 +65,11 @@ cc.Class({
             type:cc.Button
         },
 
+        saveButton:{
+            default:null,
+            type:cc.Button
+        },
+
         cellEventFlag:true,  //单元格事件开关
         // keyExistFlag:false,   //键盘弹出标志
         clickCell:null
@@ -77,7 +82,8 @@ cc.Class({
     start () {
         this.initKey();
         this.initFinish();
-        this.exitButton.node.on(cc.Node.EventType.TOUCH_END, function(){cc.director.end();}, this);
+        this.exitButton.node.on(cc.Node.EventType.TOUCH_END, this.exitGame, this);
+        this.saveButton.node.on(cc.Node.EventType.TOUCH_END, this.saveGame, this);
         sudoku.init();
         sudoku.create();
 
@@ -194,11 +200,9 @@ cc.Class({
     },
 
     saveGame:function(){
-        this.finish.node.x = 1000;
-        this.finish.node.getChildByName("again").on(cc.Node.EventType.TOUCH_END, function(){
-            sudoku.again();
-            cc.director.loadScene("index");
-        }, this);
+        cc.sys.localStorage.setItem('game', sudoku.game);
+        cc.sys.localStorage.setItem('fixedNum', sudoku.fixedNum);
     },
+
     // update (dt) {},
 });

@@ -221,13 +221,13 @@ sudoku.fillNumber = function(full, rows, cols, blocks){
 };
 
 sudoku.check = function(row, col, number){
-    var block = this.getBlock(row, col);
+    var _block = this.getBlock(row, col);
     var num = number - 1;
     if(this.rowExistNumber[row][num] == true){
         return 1;
     }else if(this.colExistNumber[col][num] == true){
         return 2;
-    }else if(this.blockExistNumber[block][num] == true){
+    }else if(this.blockExistNumber[_block][num] == true){
         return 3;
     }else {
         return 0;
@@ -281,4 +281,37 @@ sudoku.getRandomBetween = function(start, end){
     return n;
 };
 
+sudoku.loadGame = function(gamenum, fixednum){
+    this.game = gamenum;
+    this.fixedNumber = fixednum;
+    if(this.game == null){
+        return false;
+    }
+    this.rowExistNumber = new Array();
+    this.colExistNumber = new Array();
+    this.blockExistNumber = new Array();
+    for(var i = 0; i < this.game.length; i++){
+        this.rowExistNumber[i] = new Array();
+        this.colExistNumber[i] = new Array();
+        this.blockExistNumber[i] = new Array();
+        for(var j = 0; j < this.game[i].length; j++){
+            var _block = this.getBlock(row, col);
+            this.rowExistNumber[i][j] = false;
+            this.colExistNumber[i][j] = false;
+            this.blockExistNumber[i][j] = false;
+        }
+    }
+    for(var i = 0; i < this.game.length; i++){
+        for(var j = 0; j < this.game[i].length; j++){
+            var _block = this.getBlock(row, col);
+            if(this.game[i][j] > 0){
+                var num = this.game[i][j] - 1;
+                this.rowExistNumber[i][num] = true;
+                this.colExistNumber[j][num] = true;
+                this.blockExistNumber[_block][num] = true;
+            }
+        }
+    }
+    return true;
+};
 module.exports = sudoku;
